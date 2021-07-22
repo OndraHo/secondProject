@@ -1,13 +1,11 @@
 package com.example.secondProject;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import com.example.secondProject.Utils.CountryUtils;
+import com.example.secondProject.Utils.RatesUtil;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +18,7 @@ public class SecondProjectApplication {
 		SpringApplication.run(SecondProjectApplication.class, args);
 
 		CountryUtils countryUtils = new CountryUtils();
+		RatesUtil ratesUtil = new RatesUtil();
 
 		Connector connector = new Connector();
 		HttpsURLConnection connection = connector.createConnection();
@@ -29,30 +28,11 @@ public class SecondProjectApplication {
 		ObjectMapper mapper = new ObjectMapper();
 		Rates rates = mapper.readValue(jsonNode, Rates.class);
 
+		countryUtils.printListValues(ratesUtil.getEntriesMaxStdRate(rates), COUNTRY_COUNT);
+		countryUtils.printListValues(ratesUtil.getEntriesMinStdRate(rates), COUNTRY_COUNT);
 
-		countryUtils.printListValues(getEntriesMaxStdRate(rates), COUNTRY_COUNT);
-		countryUtils.printListValues(getEntriesMinStdRate(rates), COUNTRY_COUNT);
-
-		countryUtils.writeToFile(getEntriesMaxStdRate(rates), "MaxStdRates", COUNTRY_COUNT);
-		countryUtils.writeToFile(getEntriesMinStdRate(rates), "MinStdRates", COUNTRY_COUNT);
-	}
-
-	protected static List<Map.Entry<String, Country>> getEntriesMaxStdRate(final Rates rates) {
-		List<Map.Entry<String, Country>> maxRates = rates.getCountries()
-				.entrySet()
-				.stream()
-				.sorted(Comparator.comparing(o -> o.getValue().getStandardRate(), Comparator.reverseOrder()))
-				.collect(Collectors.toList());
-		return maxRates;
-	}
-
-	protected static List<Map.Entry<String, Country>> getEntriesMinStdRate(final Rates rates) {
-		List<Map.Entry<String, Country>> maxRates = rates.getCountries()
-				.entrySet()
-				.stream()
-				.sorted(Comparator.comparing(o -> o.getValue().getStandardRate()))
-				.collect(Collectors.toList());
-		return maxRates;
+		countryUtils.writeToFile(ratesUtil.getEntriesMaxStdRate(rates), "MaxStdRates", COUNTRY_COUNT);
+		countryUtils.writeToFile(ratesUtil.getEntriesMinStdRate(rates), "MinStdRates", COUNTRY_COUNT);
 	}
 
 }
