@@ -23,7 +23,6 @@ public class SecondProjectApplication {
 		Connector connector = new Connector();
 		HttpsURLConnection connection = connector.createConnection();
 		String jsonNode = connector.readData(connection);
-		System.out.println(jsonNode);
 
 		ObjectMapper mapper = new ObjectMapper();
 		Rates rates = mapper.readValue(jsonNode, Rates.class);
