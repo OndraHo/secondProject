@@ -24,10 +24,10 @@ public class Connector {
 	private static String SOURCE_OF_DATA = "https://euvatrates.com/rates.json";
 	private static int API_TIMEOUT = 5000;
 
-	public Connector() throws IOException {
+	public Connector() {
 	}
 
-	HttpsURLConnection createConnection() throws IOException {
+	protected HttpsURLConnection createConnection() throws IOException {
 		try {
 			URL url = new URL(SOURCE_OF_DATA);
 			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -42,8 +42,7 @@ public class Connector {
 		}
 	}
 
-
-	String readData(HttpsURLConnection con) throws IOException {
+	protected String readData(HttpsURLConnection con) throws IOException {
 		Integer status = con.getResponseCode();
 		if (status.toString().startsWith("2")) {
 			BufferedReader in = new BufferedReader(

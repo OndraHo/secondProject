@@ -1,16 +1,9 @@
 package com.example.secondProject;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -21,33 +14,30 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class SecondProjectApplication {
+	public static Integer COUNTRY_COUNT = 3;
 
 	public static void main(String[] args) throws IOException {
 		SpringApplication.run(SecondProjectApplication.class, args);
 
 		CountryUtils countryUtils = new CountryUtils();
 
-
 		Connector connector = new Connector();
 		HttpsURLConnection connection = connector.createConnection();
 		String jsonNode = connector.readData(connection);
 		System.out.println(jsonNode);
 
-
 		ObjectMapper mapper = new ObjectMapper();
 		Rates rates = mapper.readValue(jsonNode, Rates.class);
 
 
-		//	4. vyhledávání - vyhledam 3 země s nejvyšší a 3 s nejnižší
+		countryUtils.printListValues(getEntriesMaxStdRate(rates), COUNTRY_COUNT);
+		countryUtils.printListValues(getEntriesMinStdRate(rates), COUNTRY_COUNT);
 
-
-		;
-		maxEntries(rates);
-
-		countryUtils.printValues((HashMap<String, Country>) maxEntries(rates));
+		countryUtils.writeToFile(getEntriesMaxStdRate(rates), "MaxStdRates", COUNTRY_COUNT);
+		countryUtils.writeToFile(getEntriesMinStdRate(rates), "MinStdRates", COUNTRY_COUNT);
 	}
 
-	protected static List<Map.Entry<String, Country>> maxEntries(final Rates rates) {
+	protected static List<Map.Entry<String, Country>> getEntriesMaxStdRate(final Rates rates) {
 		List<Map.Entry<String, Country>> maxRates = rates.getCountries()
 				.entrySet()
 				.stream()
@@ -56,19 +46,13 @@ public class SecondProjectApplication {
 		return maxRates;
 	}
 
-	protected static List minRates(final Rates rates) {
-		List<Map.Entry<String, Country>> minRates = rates.getCountries()
+	protected static List<Map.Entry<String, Country>> getEntriesMinStdRate(final Rates rates) {
+		List<Map.Entry<String, Country>> maxRates = rates.getCountries()
 				.entrySet()
 				.stream()
 				.sorted(Comparator.comparing(o -> o.getValue().getStandardRate()))
 				.collect(Collectors.toList());
-		return minRates;
+		return maxRates;
 	}
-
-
-//	interaktivni prikazove radky - zadam zkratku zeme
-//	zapisu vysledek do souboru - jenom to co je v te radce - string do souboru
-//	api na GET podle kodu...
-
 
 }

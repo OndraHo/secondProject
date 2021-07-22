@@ -3,13 +3,11 @@ package com.example.secondProject;
 import java.util.HashMap;
 
 import lombok.Data;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * @author ondrej.hosek
  */
-
 
 @Data
 public class Rates {
